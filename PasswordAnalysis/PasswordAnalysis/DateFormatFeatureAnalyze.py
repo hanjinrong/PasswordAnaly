@@ -8,25 +8,27 @@ def where_is_year(str):
     if len(str) == 8:
         #yyyymmdd
         if 1900 < int(str[0:4]) < 2016 and (0 < int(str[4:6]) < 13) and (0 < int(str[6:]) < 32):
-            return True
+            return "yyyymmdd"
             #ddmmyyyy
         elif 1900 < int(str[4:]) < 2016:
             if (0 < int(str[2:4]) < 13) and (0 < int(str[0:2]) < 32):
-                return True
+                return "ddmmyyyy"
                 #mmddyyyy
             elif(0 < int(str[2:4]) < 32) and (0 < int(str[0:2]) < 13):
-                return True
+                return "mmddyyyy"
     elif len(str) == 6:
         #yymmdd
         if 0 < int(str[0:2]) < 100 and 0 < int(str[2:4]) < 13 and 0 < int(str[4:]) < 32:
-            return True
+            return "yymmdd"
         #mmddyy
         elif 0 < int(str[4:]) < 100:
             if (0 < int(str[2:4]) < 32) and (0 < int(str[0:2]) < 13):
-                return True
+                return "mmddyy"
             #ddmmyy
             elif (0 < int(str[2:4]) < 13) and (0 < int(str[0:2]) < 32):
-                return True
+                return "ddmmyy"
+
+    return None
             
 
     #    for pinyin in pinyins:
@@ -55,16 +57,17 @@ for filename in txt_filenames:
         for line in lines:
             digit_strs = re.findall("\d+", line)
             for str in digit_strs:
-                if(where_is_year(str)):
+                ret = where_is_year(str)
+                if(ret):
                     #print(str)
-                    if(str not in result):
-                        result[str] = 1
+                    if(ret not in result):
+                        result[ret] = [str]
                     else:
-                        result[str] += 1
+                        result[ret].append(str)
         #f.writelines(result[0])
 
         for feature in result:
-             f.writelines("%s\t\t%d\n" % (feature, result[feature]))
+             f.writelines("%s\t\t%d\n" % (feature, len(result[feature])))
     finally:
         txt_file.close()
         f.close()
